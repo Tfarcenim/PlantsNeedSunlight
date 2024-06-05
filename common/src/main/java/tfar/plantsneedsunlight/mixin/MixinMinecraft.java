@@ -1,6 +1,6 @@
-package com.example.examplemod.mixin;
+package tfar.plantsneedsunlight.mixin;
 
-import com.example.examplemod.CommonClass;
+import tfar.plantsneedsunlight.PlantsNeedSunlight;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +13,7 @@ public class MixinMinecraft {
     @Inject(at = @At("TAIL"), method = "<init>")
     private void init(CallbackInfo info) {
         
-        CommonClass.LOG.info("This line is printed by an example mod common mixin!");
-        CommonClass.LOG.info("MC Version: {}", Minecraft.getInstance().getVersionType());
+        PlantsNeedSunlight.LOG.info("This line is printed by an example mod common mixin!");
+        PlantsNeedSunlight.LOG.info("MC Version: {}", Minecraft.getInstance().getVersionType());
     }
 }
