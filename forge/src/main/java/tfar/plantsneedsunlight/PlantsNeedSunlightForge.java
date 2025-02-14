@@ -15,9 +15,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(PlantsNeedSunlight.MOD_ID)
 public class PlantsNeedSunlightForge {
-    
+
     public PlantsNeedSunlightForge() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER,PlantsNeedSunlightConfig.SERVER_SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, PlantsNeedSunlightConfig.SERVER_SPEC);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.addListener(this::onGrow);
         PlantsNeedSunlight.init();
@@ -27,12 +27,14 @@ public class PlantsNeedSunlightForge {
         BlockPos pos = event.getPos();
         Level level = (Level) event.getLevel();
         BlockState blockState = event.getState();
+        if (level.random.nextDouble() > PlantsNeedSunlightConfig.SERVER.cropGrowthChance.get()) {
+            event.setResult(Event.Result.DENY);
+            return;
+        }
 
-        if (level.random.nextDouble() < PlantsNeedSunlightConfig.SERVER.cropGrowthChance.get()) {
-            int skyLight = level.getBrightness(LightLayer.SKY, pos);
-            if (skyLight < 9 && PlantsNeedSunlightConfig.SERVER.cropsRequireSunlight.get()) {
-                event.setResult(Event.Result.DENY);
-            }
+        int skyLight = level.getBrightness(LightLayer.SKY, pos);
+        if (skyLight < 9 && PlantsNeedSunlightConfig.SERVER.cropsRequireSunlight.get()) {
+            event.setResult(Event.Result.DENY);
         }
     }
 }
