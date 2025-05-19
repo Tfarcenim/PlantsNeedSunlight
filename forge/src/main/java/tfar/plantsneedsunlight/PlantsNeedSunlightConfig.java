@@ -16,12 +16,15 @@ public class PlantsNeedSunlightConfig {
 
     public final ForgeConfigSpec.DoubleValue cropGrowthChance;
     public final ForgeConfigSpec.BooleanValue cropsRequireSunlight;
+    public final ForgeConfigSpec.DoubleValue saplingDeathChance;
 
     public PlantsNeedSunlightConfig(ForgeConfigSpec.Builder builder) {
         builder.push("general");
 
         cropGrowthChance = builder.comment("Chance for a crop growth event to succeed, default 1 (100%)").defineInRange("crop_growth_chance",1,0,1d);
         cropsRequireSunlight = builder.comment("Crops require sunlight to grow (default: true)").define("crops_require_sunlight",true);
+        saplingDeathChance = builder.comment("Chance for a sapling to turn into a dead bush instead of growing default 0 (0%)")
+                .defineInRange("sapling_death_chance",0d,0d,1d);
         builder.pop();
     }
 

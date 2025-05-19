@@ -3,9 +3,12 @@ package tfar.plantsneedsunlight;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.SaplingGrowTreeEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -20,13 +23,25 @@ public class PlantsNeedSunlightForge {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, PlantsNeedSunlightConfig.SERVER_SPEC);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.addListener(this::onGrow);
+        MinecraftForge.EVENT_BUS.addListener(this::onSaplingGrow);
         PlantsNeedSunlight.init();
+    }
+
+    private void onSaplingGrow(SaplingGrowTreeEvent event) {
+        BlockPos pos = event.getPos();
+        Level level = (Level) event.getLevel();
+        BlockState state = level.getBlockState(pos);
+        if (state.getBlock() instanceof  SaplingBlock && level.random.nextDouble() < PlantsNeedSunlightConfig.SERVER.saplingDeathChance.get()) {
+            event.setResult(Event.Result.DENY);
+            level.setBlock(pos, Blocks.DEAD_BUSH.defaultBlockState(),3);
+        }
     }
 
     private void onGrow(BlockEvent.CropGrowEvent.Pre event) {
         BlockPos pos = event.getPos();
         Level level = (Level) event.getLevel();
         BlockState blockState = event.getState();
+
         if (level.random.nextDouble() > PlantsNeedSunlightConfig.SERVER.cropGrowthChance.get()) {
             event.setResult(Event.Result.DENY);
             return;
